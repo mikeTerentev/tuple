@@ -1,5 +1,13 @@
 #include <iostream>
 #include "tuple.h"
+#include "assert.h"
+struct A{
+    int b;
+    A()=default;
+    A(const A& a) : b(a.b){}
+    A(A &&a) = delete;
+};
+
 int main(){
     tuple<std::string,int,bool> t("abc",5,true);
     assert(get<0>(t) == "abc");
@@ -14,5 +22,7 @@ int main(){
     std::unique_ptr<int> up(new int(10));
    tuple<std::unique_ptr<int>> tp(std::move(up));
    std::cerr<<*get<0>(tp);
+   A a;
+   tuple<A> tr(a);
     return 0;
 }

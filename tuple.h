@@ -10,23 +10,21 @@
 template<typename... Args>
 struct tuple;
 
+template<>
+struct tuple<> {
+};
+
+
 template<size_t Index, typename Ttuple>
 struct Element;
 
-template<typename T>
-struct tuple<T> {
-    explicit tuple(T &&x) : val(std::forward<T>(x)) {}
-
-public:
-    T val;
-};
 
 
 template<typename T, typename... Args>
 struct tuple<T, Args...> : public tuple<Args...> {
-    tuple() = default;
 
-    explicit tuple(T && x, Args &&...args): tuple<Args...>{std::forward<Args>(args)...}, val(std::forward<T>(x)) {}
+    template<typename F, typename ...As>
+    tuple(F &&f, As &&...args): tuple<Args...>(std::forward<As>(args)...), val(std::forward<F>(f)) {}
 
 
 public:
@@ -83,7 +81,6 @@ struct getter {
         return getter<T, Tail...>::getVal(t);
     }
 };
-
 //good
 template<typename T, typename ...Args>
 struct getter<T, T, Args...> {
