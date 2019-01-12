@@ -17,8 +17,7 @@ struct tuple<> {
 template<typename T>
 struct tuple<T> {
     template<typename F, typename = typename std::enable_if<!std::is_same<typename std::remove_reference<F>::type, tuple<T> >::value>::type>
-    tuple(F&&  x) :  val(std::forward<F>(x)) {};
-    tuple(tuple<T> const& other) = default;
+    explicit tuple(F&&  x) :  val(std::forward<F>(x)) {};
 public:
     T val;
 };
@@ -31,8 +30,6 @@ struct tuple<T, Args...> : public tuple<Args...> {
     tuple()= default;
     template<typename F, typename ...As>
     constexpr explicit  tuple(F &&f, As &&...args): tuple<Args...>(std::forward<As>(args)...), val(std::forward<F>(f)) {}
-
-    constexpr tuple(tuple<T, Args...> const& other) = default;
 
     T val;
 };
@@ -79,22 +76,22 @@ struct Frequency<T, First, Args...> {
 //bad
 template<typename T, typename Head, typename ...Tail>
 struct getter {
-    static T const &getVal(tuple<Head, Tail...> const &t) {
+    static constexpr T const &getVal(tuple<Head, Tail...> const &t) {
         return getter<T, Tail...>::getVal(t);
     }
 
-    static T &getVal(tuple<Head, Tail...> &t) {
+    static constexpr T &getVal(tuple<Head, Tail...> &t) {
         return getter<T, Tail...>::getVal(t);
     }
 };
 //good
 template<typename T, typename ...Args>
 struct getter<T, T, Args...> {
-    static T const &getVal(tuple<T, Args...> const &t) {
+    static constexpr T const &getVal(tuple<T, Args...> const &t) {
         return t.val;
     }
 
-    static T &getVal(tuple<T, Args...> &t) {
+    static constexpr T &getVal(tuple<T, Args...> &t) {
         return t.val;
     }
 };
