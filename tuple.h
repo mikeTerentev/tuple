@@ -13,14 +13,15 @@ struct tuple;
 template<>
 struct tuple<> {
 };
-/*
+
 template<typename T>
 struct tuple<T> {
-    template<typename F>
-    explicit tuple(F&  x) : val(x) {};
+    template<typename F, typename = typename std::enable_if<!std::is_same<typename std::remove_reference<F>::type, tuple<T> >::value>::type>
+    tuple(F&&  x) :  val(std::forward<F>(x)) {};
+    tuple(tuple<T> const& other) = default;
 public:
     T val;
-};*/
+};
 
 template<size_t Index, typename Ttuple>
 struct Element;
@@ -29,10 +30,10 @@ template<typename T, typename... Args>
 struct tuple<T, Args...> : public tuple<Args...> {
     tuple()= default;
     template<typename F, typename ...As>
-    constexpr explicit tuple(F &&f, As &&...args): tuple<Args...>(std::forward<As>(args)...), val(std::forward<F>(f)) {}
+    constexpr explicit  tuple(F &&f, As &&...args): tuple<Args...>(std::forward<As>(args)...), val(std::forward<F>(f)) {}
 
-    template<typename F, typename ...As>
-    constexpr explicit tuple(F &f, As &...args): tuple<Args...>(args...), val(f) {}
+    constexpr tuple(tuple<T, Args...> const& other) = default;
+
     T val;
 };
 
