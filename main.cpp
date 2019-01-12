@@ -11,5 +11,8 @@ int main(){
     assert(get<0>(tc) == res);
     assert(get<std::string>(tc) == res);
    // assert(get<long>(t)== 5);
+    std::unique_ptr<int> up(new int(10));
+   tuple<std::unique_ptr<int>> tp(std::move(up));
+   std::cerr<<*get<0>(tp);
     return 0;
 }
