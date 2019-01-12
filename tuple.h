@@ -22,7 +22,7 @@ struct Element;
 
 template<typename T, typename... Args>
 struct tuple<T, Args...> : public tuple<Args...> {
-
+    tuple()= default;
     template<typename F, typename ...As>
     constexpr explicit tuple(F &&f, As &&...args): tuple<Args...>(std::forward<As>(args)...), val(std::forward<F>(f)) {}
 
