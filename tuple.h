@@ -24,10 +24,8 @@ template<typename T, typename... Args>
 struct tuple<T, Args...> : public tuple<Args...> {
 
     template<typename F, typename ...As>
-    tuple(F &&f, As &&...args): tuple<Args...>(std::forward<As>(args)...), val(std::forward<F>(f)) {}
+    constexpr explicit tuple(F &&f, As &&...args): tuple<Args...>(std::forward<As>(args)...), val(std::forward<F>(f)) {}
 
-
-public:
     T val;
 };
 
