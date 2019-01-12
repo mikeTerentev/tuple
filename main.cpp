@@ -24,5 +24,8 @@ int main(){
    std::cerr<<*get<0>(tp);
    A a;
    tuple<A> tr(a);
+
+   tuple<int> tiii(10);
+   tuple<int> t2iii(tiii);
     return 0;
 }

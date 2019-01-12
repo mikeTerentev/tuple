@@ -13,12 +13,17 @@ struct tuple;
 template<>
 struct tuple<> {
 };
-
+/*
+template<typename T>
+struct tuple<T> {
+    template<typename F>
+    explicit tuple(F&  x) : val(x) {};
+public:
+    T val;
+};*/
 
 template<size_t Index, typename Ttuple>
 struct Element;
-
-
 
 template<typename T, typename... Args>
 struct tuple<T, Args...> : public tuple<Args...> {
@@ -26,6 +31,8 @@ struct tuple<T, Args...> : public tuple<Args...> {
     template<typename F, typename ...As>
     constexpr explicit tuple(F &&f, As &&...args): tuple<Args...>(std::forward<As>(args)...), val(std::forward<F>(f)) {}
 
+    template<typename F, typename ...As>
+    constexpr explicit tuple(F &f, As &...args): tuple<Args...>(args...), val(f) {}
     T val;
 };
 
